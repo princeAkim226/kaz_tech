@@ -3,12 +3,13 @@ import { useState } from 'react';
 
 export default function RevenueManagement() {
   const [selectedPeriod, setSelectedPeriod] = useState<string>('day');
-  const [revenues, setRevenues] = useState([
+  const [revenues] = useState([
     { date: '2024-11-13', amount: 120, description: 'Vente 1' },
     { date: '2024-11-13', amount: 50, description: 'Vente 2' },
     { date: '2024-11-06', amount: 200, description: 'Vente hebdomadaire' },
     { date: '2024-10-01', amount: 1500, description: 'Vente mensuelle' },
   ]);
+  
 
   // Filter the revenues based on the selected period
   const filteredRevenues = revenues.filter((revenue) => {
