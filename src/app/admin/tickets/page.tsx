@@ -1,28 +1,28 @@
 "use client";
 
+import { Suspense } from "react"; // Import de Suspense
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
+// Données fictives pour les tickets
 const mockTickets = {
   1: { "100 F": 10, "200 F": 5, "300 F": 3, "1000 F": 2, "5000 F": 1 },
   2: { "100 F": 7, "200 F": 2, "300 F": 1, "1000 F": 0, "5000 F": 0 },
   3: { "100 F": 0, "200 F": 0, "300 F": 0, "1000 F": 0, "5000 F": 0 },
 };
 
+// Composant TicketsPage
 const TicketsPage = () => {
   const searchParams = useSearchParams();
-  const accountId = searchParams.get("accountId");
-  const [ticketsByCategory, setTicketsByCategory] = useState<
-    Record<string, number>
-  >({});
+  const accountId = searchParams.get("accountId"); // Récupération de l'ID du compte à partir des paramètres d'URL
+  const [ticketsByCategory, setTicketsByCategory] = useState<Record<string, number>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [newCount, setNewCount] = useState<number>(0);
 
   useEffect(() => {
     if (accountId) {
-      const accountTickets =
-        mockTickets[Number(accountId) as keyof typeof mockTickets] || {};
+      const accountTickets = mockTickets[Number(accountId) as keyof typeof mockTickets] || {};
       setTicketsByCategory(accountTickets);
     }
   }, [accountId]);
@@ -48,10 +48,7 @@ const TicketsPage = () => {
         <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-6">
           <ul className="divide-y divide-gray-200">
             {Object.entries(ticketsByCategory).map(([category, count], index) => (
-              <li
-                key={index}
-                className="flex justify-between items-center py-3"
-              >
+              <li key={index} className="flex justify-between items-center py-3">
                 <span className="text-gray-700 font-medium">{category}</span>
                 <span
                   className={`text-sm font-semibold ${
@@ -73,9 +70,7 @@ const TicketsPage = () => {
           </div>
         </div>
       ) : (
-        <p className="text-gray-600 text-center">
-          Aucun ticket disponible pour ce compte.
-        </p>
+        <p className="text-gray-600 text-center">Aucun ticket disponible pour ce compte.</p>
       )}
 
       {isModalOpen && (
@@ -83,17 +78,13 @@ const TicketsPage = () => {
           <div className="bg-white w-full max-w-sm p-6 rounded-lg shadow-lg">
             <h2 className="text-lg font-bold mb-4">Mettre à jour une catégorie</h2>
             <div className="mb-4">
-              <label className="block text-gray-700 font-medium mb-2">
-                Catégorie
-              </label>
+              <label className="block text-gray-700 font-medium mb-2">Catégorie</label>
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
               >
-                <option value="" disabled>
-                  Sélectionnez une catégorie
-                </option>
+                <option value="" disabled>Sélectionnez une catégorie</option>
                 {Object.keys(ticketsByCategory).map((category) => (
                   <option key={category} value={category}>
                     {category}
@@ -102,9 +93,7 @@ const TicketsPage = () => {
               </select>
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 font-medium mb-2">
-                Nouveau nombre de tickets
-              </label>
+              <label className="block text-gray-700 font-medium mb-2">Nouveau nombre de tickets</label>
               <input
                 type="number"
                 value={newCount}
@@ -135,4 +124,11 @@ const TicketsPage = () => {
   );
 };
 
-export default TicketsPage;
+// Wrapper du composant avec Suspense
+const TicketsPageWrapper = () => (
+  <Suspense fallback={<div>Chargement des tickets...</div>}>
+    <TicketsPage />
+  </Suspense>
+);
+
+export default TicketsPageWrapper;
